@@ -1,0 +1,36 @@
+{
+    "variables": {
+      "name": "centos_7_apache",
+      "source_ami": "ami-0912f71e06545ad88",
+      "access_key":"AKIAI3HIHIURKUXV32EA",
+      "secret_key":"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",
+      "region":"ap-south-1"
+    },
+    "builders": [{
+      "type": "amazon-ebs",
+      "access_key": "{{user `access_key`}}",
+      "secret_key":"{{user `secret_key`}}",
+      "ami_name": "{{user `name`}}",
+      "region": "{{user `region`}}",
+      "source_ami": "{{user `source_ami`}}",
+      "instance_type": "t2.micro",
+      "communicator": "ssh",
+      "ssh_username": "ec2-user",
+      "run_tags":{"Name":"packer-image"}
+    }],
+    "provisioners": [
+                {
+            "type": "shell",
+            "inline": [
+			 "sleep 30",
+      "sudo yum install httpd -y",
+      "sudo chkconfig httpd on",
+	  "sudo chown -R ec2-user:ec2-user /var/www/html/",
+	  "sudo echo 'hi this is my first image from packer' > /var/www/html/index.html",
+	  "sudo service httpd start"
+        ]}
+		]
+  }
+    
+  
+
